@@ -17,7 +17,6 @@ export function getCellElementAtIdx(idx) {
 
 }
 
-
 export function getGameStatusElement() {
   return document.getElementById('gameStatus')
 }
