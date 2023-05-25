@@ -7,6 +7,8 @@ import {
   getCellElementAtIdx, getGameStatusElement
 } from "./selectors.js";
 
+import { checkGameStatus } from "./utils.js";
+
 // console.log(getCellElementAtIdx(4));
 // console.log(getCellElementList());
 // console.log(getCurrentTurnElement());
