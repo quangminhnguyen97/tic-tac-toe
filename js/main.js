@@ -10,7 +10,6 @@ import {
 import { checkGameStatus } from "./utils.js";
 
 let currentTurn = TURN.CROSS
-let isGameEnded = false;
 let cellValues = new Array(9).fill("");
 let gameStatus = GAME_STATUS.PLAYING
 
@@ -48,6 +47,11 @@ function updateGameStatus(status) {
 function showReplayButton() {
   const replayButton = getReplayButtonElement()
   if (replayButton) replayButton.classList.add('show')
+}
+
+function hideReplayButton() {
+  const replayButton = getReplayButtonElement()
+  if (replayButton) replayButton.classList.add('hide')
 }
 
 function highlightWinCells(winCells) {
@@ -89,6 +93,30 @@ function handleCellClick(cell, index) {
 
 }
 
+function replayGame() {
+  currentTurn = TURN.CROSS
+  cellValues = cellValues.map(() => '')
+  updateGameStatus(GAME_STATUS.PLAYING)
+  const currentTurnElement = getCurrentTurnElement()
+  if (currentTurnElement) {
+    currentTurnElement.classList.remove(TURN.CIRCLE, TURN.CROSS)
+    currentTurnElement.classList.add(currentTurn)
+  }
+  const cellElementList = getCellElementList();
+  for (const cell of cellElementList) {
+    cell.className = ''
+  }
+  hideReplayButton()
+}
+
+function initReplayButtonElement() {
+  const btnElement = getReplayButtonElement()
+  if (btnElement) {
+    btnElement.addEventListener('click', replayGame)
+  }
+
+}
+
 function initCellElementList() {
   const cellElementList = getCellElementList();
   cellElementList.forEach((cell, index) => {
@@ -100,4 +128,5 @@ function initCellElementList() {
   // bind click event for all li element.
   initCellElementList()
   // bind click event for replay button.
+  initReplayButtonElement()
 })()
