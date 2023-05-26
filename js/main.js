@@ -1,22 +1,18 @@
 /**
  * Global variables
  */
-import { TURN } from "./constants.js";
+import { TURN, GAME_STATUS, CELL_VALUE } from "./constants.js";
 import {
   getCellElementList, getCurrentTurnElement,
-  getCellElementAtIdx, getGameStatusElement
+  getCellElementAtIdx, getGameStatusElement, getReplayButtonElement
 } from "./selectors.js";
 
 import { checkGameStatus } from "./utils.js";
 
-// console.log(getCellElementAtIdx(4));
-// console.log(getCellElementList());
-// console.log(getCurrentTurnElement());
-// console.log(getGameStatusElement());
-
 let currentTurn = TURN.CROSS
 let isGameEnded = false;
 let cellValues = new Array(9).fill("");
+let gameStatus = GAME_STATUS.PLAYING
 
 /**
  * TODOs
@@ -43,11 +39,54 @@ function toggleTurn() {
   }
 }
 
+function updateGameStatus(status) {
+  gameStatus = status
+  const gameStatusElement = getGameStatusElement()
+  if (gameStatusElement) gameStatusElement.textContent = status
+}
+
+function showReplayButton() {
+  const replayButton = getReplayButtonElement()
+  if (replayButton) replayButton.classList.add('show')
+}
+
+function highlightWinCells(winCells) {
+  for (let cell of winCells) {
+    const cellElement = getCellElementAtIdx(cell)
+    cellElement.classList.add('win')
+  }
+}
+
 function handleCellClick(cell, index) {
   const isClicked = cell.classList.contains(TURN.CIRCLE) || cell.classList.contains(TURN.CROSS)
-  if (isClicked) return;
+
+  const isEnded = gameStatus !== GAME_STATUS.PLAYING
+  if (isClicked || isEnded) return;
   cell.classList.add(currentTurn)
+
+  cellValues[index] = currentTurn === TURN.CIRCLE ? CELL_VALUE.CIRCLE : CELL_VALUE.CROSS
+
   toggleTurn()
+
+  const game = checkGameStatus(cellValues)
+
+  switch (game.status) {
+    case GAME_STATUS.ENDED:
+      updateGameStatus(game.status)
+      showReplayButton()
+      break;
+
+    case GAME_STATUS.X_WIN:
+    case GAME_STATUS.O_WIN:
+      updateGameStatus(game.status)
+      showReplayButton()
+      highlightWinCells(game.winPositions)
+      break;
+
+    default:
+      break;
+  }
+
 }
 
 function initCellElementList() {

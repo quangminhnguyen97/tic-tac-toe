@@ -13,10 +13,13 @@ export function getCurrentTurnElement() {
 }
 
 export function getCellElementAtIdx(idx) {
-  return document.querySelectorAll(`#cellList > li:nth-child(${(idx + 1)})`)
-
+  return document.querySelector(`#cellList > li:nth-child(${(idx + 1)})`)
 }
 
 export function getGameStatusElement() {
   return document.getElementById('gameStatus')
+}
+
+export function getReplayButtonElement() {
+  return document.getElementById('replayGame')
 }
