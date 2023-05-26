@@ -4,7 +4,7 @@
 import { TURN, GAME_STATUS, CELL_VALUE } from "./constants.js";
 import {
   getCellElementList, getCurrentTurnElement,
-  getCellElementAtIdx, getGameStatusElement, getReplayButtonElement
+  getCellElementAtIdx, getGameStatusElement, getReplayButtonElement, getUlElement
 } from "./selectors.js";
 
 import { checkGameStatus } from "./utils.js";
@@ -51,7 +51,7 @@ function showReplayButton() {
 
 function hideReplayButton() {
   const replayButton = getReplayButtonElement()
-  if (replayButton) replayButton.classList.add('hide')
+  if (replayButton) replayButton.classList.remove('show')
 }
 
 function highlightWinCells(winCells) {
@@ -118,9 +118,15 @@ function initReplayButtonElement() {
 }
 
 function initCellElementList() {
-  const cellElementList = getCellElementList();
-  cellElementList.forEach((cell, index) => {
-    cell.addEventListener('click', () => handleCellClick(cell, index))
+  const liList = getCellElementList();
+  liList.forEach((cell, index) => {
+    cell.dataset.idx = index;
+  })
+  const ulElement = getUlElement()
+  ulElement.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'LI') return
+    const index = Number.parseInt(e.target.dataset.idx)
+    handleCellClick(e.target, index)
   })
 }
 
